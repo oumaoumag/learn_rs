@@ -1,15 +1,5 @@
-pub struct Student(pub u32, pub String, pub String);
-
-pub fn id(student: &Student) -> u32 {
-    student.0
-}
-
-pub fn first_name(student: &Student) -> &str {
-    &student.1
-}
-
-pub fn last_name(student: &Student) -> &str {
-    &student.2
+pub fn str_len(s: &str) -> usize {
+    s.chars().count()
 }
 
 #[cfg(test)]
@@ -17,10 +7,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_student_functions() {
-        let student = Student(20, "Pedro".to_string(), "Domingos".to_string());
-        assert_eq!(id(&student), 20);
-        assert_eq!(first_name(&student), "Pedro");
-        assert_eq!(last_name(&student), "Domingos");
+    fn test_str_len() {
+        assert_eq!(str_len("hello"), 5);
+        let s1 = "camelCase".to_string();
+        assert_eq!(str_len(&s1), 9);
+        assert_eq!(str_len("olá!"), 4);
     }
 }

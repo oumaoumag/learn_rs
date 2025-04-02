@@ -1,5 +1,5 @@
 [package]
-name = "matrix_transpositio"
+name = "matrix_transposition"
 version = "0.1.0"
 edition = "2024"
 

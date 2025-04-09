@@ -1,17 +1,17 @@
 use std::{collections::HashMap, num::ParseFloatError};
 
-pub struct Flag<'a> {
+pub struct Flag {
     pub short_hand: String,
     pub long_hand: String,
-    pub desc: &'a str,
+    pub desc: String,
 }
 
-impl<'a> Flag<'a> {
-    pub fn opt_flag(name: &'a str, d: &'a str) -> Self {
+impl Flag {
+    pub fn opt_flag(name: &str, d: &str) -> Self {
         Self {
             short_hand: format!("-{}", &name[0..1]),
             long_hand: format!("--{}", name),
-            desc: d,
+            desc: d.to_string(),
         }
     }
 }
@@ -19,22 +19,22 @@ impl<'a> Flag<'a> {
 pub type Callback = fn(&str, &str) -> Result<String, ParseFloatError>;
 
 pub struct FlagsHandler {
-    pub flags: HashMap<(String, String), Callback>,
+    pub flags: HashMap<String, Callback>,
 }
 
 impl FlagsHandler {
     pub fn add_flag(&mut self, flag: Flag, func: Callback) {
-        self.flags.insert((flag.short_hand, flag.long_hand), func);
+        // Store the callback for both short_hand and long_hand
+        self.flags.insert(flag.short_hand, func);
+        self.flags.insert(flag.long_hand, func);
     }
 
     pub fn exec_func(&self, input: &str, argv: &[&str]) -> Result<String, String> {
-        for ((short, long), callback) in &self.flags {
-            if input == short || input == long {
-                if argv.len() < 2 {
-                    return Err("Not enough arguments".to_string());
-                }
-                return callback(argv[0], argv[1]).map_err(|e| e.to_string());
+        if let Some(callback) = self.flags.get(input) {
+            if argv.len() < 2 {
+                return Err("Not enough arguments".to_string());
             }
+            return callback(argv[0], argv[1]).map_err(|e| e.to_string());
         }
         Err(format!("Flag {} not found", input))
     }
@@ -94,5 +94,24 @@ mod tests {
         assert!(handler.exec_func("-d", &["a", "2"]).is_err());
         assert!(handler.exec_func("-r", &["10", "b"]).is_err());
         assert!(handler.exec_func("-x", &["10", "2"]).is_err());
+    }
+
+    #[test]
+    fn test_example_from_instructions() {
+        let mut handler = FlagsHandler { flags: HashMap::new() };
+
+        let d = Flag::opt_flag("division", "divides the values, formula (a / b)");
+        let r = Flag::opt_flag(
+            "remainder",
+            "remainder of the division between two values, formula (a % b)",
+        );
+
+        handler.add_flag(d, div);
+        handler.add_flag(r, rem);
+
+        assert_eq!(handler.exec_func("-d", &["1.0", "2.0"]).unwrap(), "0.5");
+        assert_eq!(handler.exec_func("-r", &["2.0", "2.0"]).unwrap(), "0");
+        assert!(handler.exec_func("--division", &["a", "2.0"]).is_err());
+        assert!(handler.exec_func("--remainder", &["2.0", "fd"]).is_err());
     }
 }

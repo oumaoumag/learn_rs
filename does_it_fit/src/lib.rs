@@ -1,4 +1,5 @@
 pub mod areas_volumes;
+pub use areas_volumes::{GeometricalShapes, GeometricalVolumes};
 
 
 pub fn area_fit(

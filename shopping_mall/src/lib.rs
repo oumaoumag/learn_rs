@@ -74,7 +74,7 @@ pub fn check_for_securities(mall: &mut Mall, guards: Vec<Guard>) {
     }
 }
 
-// 5. Adjust employee salaries based on working hours
+// Adjust employee salaries based on working hours
 pub fn cut_or_raise(mall: &mut Mall) {
     for floor in &mut mall.floors {
         for store in &mut floor.stores {
@@ -84,10 +84,10 @@ pub fn cut_or_raise(mall: &mut Mall) {
                 
                 if hours > 10 {
                     // Raise salary by 10%
-                    employee.salary *= 1.1;
+                    employee.salary = (employee.salary * 1.1 * 10000.0).round() / 10000.0;
                 } else {
                     // Cut salary by 10%
-                    employee.salary *= 0.9;
+                    employee.salary = (employee.salary * 0.9 * 10000.0).round() / 10000.0;
                 }
             }
         }

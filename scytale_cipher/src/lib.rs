@@ -1,4 +1,4 @@
-fn scytale_cipher(message: String, i: u32) -> String {
+pub fn scytale_cipher(message: String, i: u32) -> String {
     let c = i as usize;         // Number of columns
     let n = message.len();      // Length of the message
     

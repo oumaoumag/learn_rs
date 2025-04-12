@@ -6,7 +6,7 @@ pub fn scytale_cipher(message: String, i: u32) -> String {
         return String::new();
     }
 
-    let r = (n + c - 1) / c;
+    let r = (n + c - 1) / c;   // Number of rows
 
     // Create a 2D grid to hold the characters
     let mut grid = vec![vec![' '; r]; c];
@@ -26,7 +26,7 @@ pub fn scytale_cipher(message: String, i: u32) -> String {
     let mut result = String::new();
     for col in 0..c {
         for row in 0..r {
-            if col * r + row < n {
+            if row * c + col < n {
                 result.push(grid[col][row]);
             }
         }

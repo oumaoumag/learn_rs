@@ -5,10 +5,9 @@ pub fn pig_latin(text: &str) -> String {
 
     // Check if the word starts with a vowel
     let first_char = text.chars().next().unwrap().to_lowercase().next().unwrap();
-    let is_vowel = "aeiou".contains(first_char);
-
-    if is_vowel {
-        // Rule 1: If word begins with a vowel, add "ay" to the end
+    
+    if "aeiou".contains(first_char) {
+        // If word begins with a vowel, add "ay" to the end
         return format!("{}ay", text);
     }
 
@@ -19,14 +18,6 @@ pub fn pig_latin(text: &str) -> String {
     let mut vowel_pos = 0;
     while vowel_pos < chars.len() && !"aeiouAEIOU".contains(chars[vowel_pos]) {
         vowel_pos += 1;
-    }
-    
-    // Handle the special "qu" case
-    if vowel_pos > 0 && vowel_pos < chars.len() - 1 {
-        if (chars[vowel_pos] == 'u' || chars[vowel_pos] == 'U') && 
-           (chars[vowel_pos-1] == 'q' || chars[vowel_pos-1] == 'Q') {
-            vowel_pos += 1; // Include 'u' in the consonant cluster
-        }
     }
     
     // If no vowel was found, move the entire word

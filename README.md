@@ -1,4 +1,4 @@
-# rust-piscine
+# rust-piscine / learn_rs
 
 A collection of Rust exercises and implementations focusing on fundamental Rust concepts.
 
@@ -17,6 +17,9 @@ Temperature conversion utilities:
 - Fahrenheit to Celsius conversion
 - Celsius to Fahrenheit conversion
 
+### box_it
+Rust boxing utilities and examples.
+
 ## Running Tests
 
 Each project can be tested individually using Cargo:
@@ -27,6 +30,9 @@ cargo test
 
 cd ../temperature_conv
 cargo test
+
+cd ../box_it
+cargo test
 ```
 
 ## Project Structure
@@ -36,7 +42,11 @@ cargo test
 │   ├── src/
 │   │   └── lib.rs
 │   └── Cargo.toml
-└── temperature_conv/
+├── temperature_conv/
+│   ├── src/
+│   │   └── lib.rs
+│   └── Cargo.toml
+└── box_it/
     ├── src/
     │   └── lib.rs
     └── Cargo.toml

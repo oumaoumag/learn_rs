@@ -21,7 +21,7 @@ impl<'a, T: Logger> Tracker<'a, T> {
         }
     }
 
-    pub fn set_value(&self, rc_value: &Rc<i32>) {
+    pub fn set_value<U>(&self, rc_value: &Rc<U>) {
         let count = Rc::strong_count(rc_value);
         let percentage = (count as f64 / self.max as f64) * 100.0;
 
@@ -33,7 +33,7 @@ impl<'a, T: Logger> Tracker<'a, T> {
         }
     }
 
-    pub fn peek(&self, rc_value: &Rc<i32>) {
+    pub fn peek<U>(&self, rc_value: &Rc<U>) {
         let count = Rc::strong_count(rc_value);
         let percentage = (count as f64 / self.max as f64) * 100.0;
         let message = format!("you are using up to {}% of your quota", percentage.round() as usize);

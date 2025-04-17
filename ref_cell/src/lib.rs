@@ -1,20 +1,18 @@
 pub mod messenger;
 
-use std::cell::RefCell;
-use std::collections::HashMap;
-use std::rc::Rc;
+use std::{collections::HashMap, cell::RefCell, rc::Rc};
 
-use messenger::Logger;
-pub use messenger::Tracker;
+pub use messenger::{Logger, Tracker};
+pub use std::{cell::RefCell, rc::Rc};
 
-pub struct Worker {
-    pub track_value: Rc<i32>,
+pub struct Worker<T> {
+    pub track_value: Rc<T>,
     pub mapped_messages: RefCell<HashMap<String, String>>,
     pub all_messages: RefCell<Vec<String>>,
 }
 
-impl Worker {
-    pub fn new(value: i32) -> Self {
+impl<T> Worker<T> {
+    pub fn new(value: T) -> Self {
         Worker {
             track_value: Rc::new(value),
             mapped_messages: RefCell::new(HashMap::new()),
@@ -23,7 +21,7 @@ impl Worker {
     }
 }
 
-impl Logger for Worker {
+impl<T> Logger for Worker<T> {
     fn warning(&self, msg: &str) {
         let formatted_msg = format!("Warning: {}", msg);
         self.mapped_messages.borrow_mut().insert("Warning".to_string(), msg.to_string());

@@ -3,11 +3,12 @@
 // Import the messenger module
 pub mod messenger;
 
+// Re-export the Tracker struct and Logger trait
+pub use messenger::{Logger, Tracker};
+
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
-
-use messenger::Logger;
 
 // Worker structure that implements the Logger trait
 pub struct Worker {

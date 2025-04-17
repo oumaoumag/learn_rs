@@ -1,4 +1,5 @@
 // messenger.rs - Module for tracking and limiting references
+use std::cell::Cell;
 
 // Logger trait for displaying messages
 pub trait Logger {
@@ -10,6 +11,7 @@ pub trait Logger {
 // Tracker structure to monitor reference counts
 pub struct Tracker<'a> {
     logger: &'a dyn Logger,
+    pub value: Cell<usize>,
     max: usize,
 }
 
@@ -18,14 +20,18 @@ impl<'a> Tracker<'a> {
     pub fn new(logger: &'a dyn Logger, max: usize) -> Self {
         Tracker {
             logger,
+            value: Cell::new(0),
             max,
         }
     }
 
     // Set the value and check if it exceeds thresholds
     pub fn set_value(&self, value: &std::rc::Rc<i32>) {
+        // Use Cell to update the value field
         let count = std::rc::Rc::strong_count(value);
-        let percentage = (count as f32 / self.max as f32) * 100.0;
+        self.value.set(count);
+
+        let percentage = (self.value.get() as f32 / self.max as f32) * 100.0;
 
         if percentage >= 100.0 {
             self.logger.error("you are over your quota!");
@@ -46,8 +52,11 @@ impl<'a> Tracker<'a> {
 
     // Peek at the current usage percentage
     pub fn peek(&self, value: &std::rc::Rc<i32>) {
+        // Use Cell to update the value field
         let count = std::rc::Rc::strong_count(value);
-        let percentage = (count as f32 / self.max as f32) * 100.0;
+        self.value.set(count);
+
+        let percentage = (self.value.get() as f32 / self.max as f32) * 100.0;
 
         self.logger.info(&format!(
             "you are using up to {}% of your quota",

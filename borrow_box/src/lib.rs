@@ -21,7 +21,7 @@ impl GameSession {
     pub fn read_winner(&self) -> (String, u16) {
         if self.p1.1 == self.p2.1 {
             ("Same score! tied".to_string(), self.p1.1)
-        } else if self.p1.1 > self.p1.1 {
+        } else if self.p1.1 > self.p2.1 {
             (self.p1.0.clone(), self.p1.1)
         } else {
             (self.p2.0.clone(), self.p2.1)
@@ -30,20 +30,21 @@ impl GameSession {
 
     // Updates the player's score
     pub fn update_score(&mut self, user_name: String) {
-        // Check if the game is already finished
-        let total_games = self.p1.1 + self.p2.1;
-        if total_games >= self.nb_games {
-            return;
-        }
+        // Calculate the winning score (more than half of total games)
+        let winning_score = (self.nb_games / 2) + 1;
 
-        // Check which player to update
+        if self.p1.1 >= winning_score || self.p2.1 >= winning_score {
+            return;  // Game is already finished, do nothing
+        }
+        
+        // Update the score for the matching player
         if user_name == self.p1.0 {
             self.p1.1 += 1;
         } else if user_name == self.p2.0 {
             self.p2.1 += 1;
         }
     }
-
+    
     pub fn delete(self) -> String {
         format!("game deleted: id -> {}", self.id)
     }

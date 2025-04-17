@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 use messenger::Logger;
+pub use messenger::Tracker;
 
 pub struct Worker {
     pub track_value: Rc<i32>,

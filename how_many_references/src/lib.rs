@@ -1,11 +1,11 @@
 pub use std::rc::Rc;
 
 pub struct Node {
-    pub re_list: Vec<Rc<String>>,
+    pub ref_list: Vec<Rc<String>>,
 }
 
 impl Node {
-    pub fn new(ref_list: Vec<Rc>String>>) -> Node {
+    pub fn new(ref_list: Vec<Rc<String>>) -> Node {
         Node { ref_list: ref_list }
     }
 
@@ -19,5 +19,5 @@ impl Node {
 }
 
 pub fn how_many_references(ref_list: &Rc<String>) -> usize {
-    Rc::strong_count(re_list)
+    Rc::strong_count(ref_list)
 }

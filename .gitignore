@@ -14,20 +14,56 @@ Cargo.lock
 # VS Code
 .vscode/
 *.code-workspace
+.history/
 
 # Operating System
 .DS_Store
 Thumbs.db
+*.tmp
+Desktop.ini
+$RECYCLE.BIN/
 
 # Build artifacts
 dist/
 build/
+out/
+*.o
+*.so
+*.dylib
+*.dll
 
 # Backup files
 *~
 *.swp
 *.swo
+*.bak
+*.orig
+*.old
 
 # Environment
 .env
 .env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Documentation
+docs/_build/
+doc/
+/target
+
+# Project specific
+LEARNING_GUIDELINES.md

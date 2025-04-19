@@ -1,6 +1,6 @@
 #[derive(Clone, Debug)]
 pub struct List<T> {
-    pub head: Option<Box<Node<T>>>,
+    pub head: Option<Box<Node<T>>>, 
 }
 
 #[derive(Clone, Debug)]

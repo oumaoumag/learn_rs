@@ -1,78 +1,37 @@
 use std::ops::{Add, Sub};
-pub use matrix::Matrix;
-pub use lalgebra_scalar::Scalar;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct MatrixOps<T>(pub Matrix<T>);
+pub struct Matrix(pub Vec<Vec<i32>>);
 
-impl<T> From<Matrix<T>> for MatrixOps<T> {
-    fn from(matrix: Matrix<T>) -> Self {
-        MatrixOps(matrix)
-    }
-}
+impl Add for Matrix {
+    type Output = Option<Matrix>;
 
-// Implement conversion from MatrixOps to Matrix
-impl<T> From<MatrixOps<T>> for Matrix<T> {
-    fn from(matrix_ops: MatrixOps<T>) -> Self {
-        matrix_ops.0
-    }
-}
-
-
-impl<T: Scalar<Item = T> + Clone> Add for MatrixOps<T> {
-    type Output = Option<Self>;
-
-    fn add(self, other: Self) -> Self::Output {
-        if self.0.0.len() != other.0.0.len() {
+    fn add(self, rhs: Matrix) -> Self::Output {
+        if self.0.len() != rhs.0.len() || self.0.iter().zip(&rhs.0).any(|(a, b)| a.len() != b.len()) {
             return None;
         }
 
-        for i in 0..self.0.0.len() {
-            if self.0.0[i].len() != other.0.0[i].len() {
-                return None;
-            }
-        }
+        let result = self.0.into_iter().zip(rhs.0.into_iter()).map(|(row_a, row_b)| {
+            row_a.into_iter().zip(row_b.into_iter()).map(|(a, b)| a + b).collect()
+        }).collect();
 
-        // Perform addition
-        let mut result = Vec::with_capacity(self.0.0.len());
-        for i in 0..self.0.0.len() {
-            let mut row = Vec::with_capacity(self.0.0[i].len());
-            for j in 0..self.0.0[i].len() {
-                row.push(self.0.0[i][j] + other.0.0[i][j]);
-            }
-            result.push(row);
-        }
-
-        Some(MatrixOps(Matrix(result)))
+        Some(Matrix(result))
     }
 }
 
-impl<T: Scalar<Item = T> + Clone> Sub for MatrixOps<T> {
-    type Output = Option<Self>;
+impl Sub for Matrix {
+    type Output = Option<Matrix>;
 
-    fn sub(self, other: Self) -> Self::Output {
-        // Check if matrices have the same dimensions
-        if self.0.0.len() != other.0.0.len() {
+    fn sub(self, rhs: Matrix) -> Self::Output {
+        if self.0.len() != rhs.0.len() || self.0.iter().zip(&rhs.0).any(|(a, b)| a.len() != b.len()) {
             return None;
         }
 
-        for i in 0..self.0.0.len() {
-            if self.0.0[i].len() != other.0.0[i].len() {
-                return None;
-            }
-        }
+        let result = self.0.into_iter().zip(rhs.0.into_iter()).map(|(row_a, row_b)| {
+            row_a.into_iter().zip(row_b.into_iter()).map(|(a, b)| a - b).collect()
+        }).collect();
 
-        // Perform subtraction
-        let mut result = Vec::with_capacity(self.0.0.len());
-        for i in 0..self.0.0.len() {
-            let mut row = Vec::with_capacity(self.0.0[i].len());
-            for j in 0..self.0.0[i].len() {
-                row.push(self.0.0[i][j] - other.0.0[i][j]);
-            }
-            result.push(row);
-        }
-
-        Some(MatrixOps(Matrix(result)))
+        Some(Matrix(result))
     }
 }
 
@@ -81,36 +40,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_matrix_addition() {
-        let matrix1 = MatrixOps(Matrix(vec![vec![8, 1], vec![9, 1]]));
-        let matrix2 = MatrixOps(Matrix(vec![vec![1, 1], vec![1, 1]]));
-        let expected = MatrixOps(Matrix(vec![vec![9, 2], vec![10, 2]]));
-
-        assert_eq!(matrix1 + matrix2, Some(expected));
+    fn test_add() {
+        let matrix = Matrix(vec![vec![1, 2], vec![3, 4]]);
+        let matrix_2 = Matrix(vec![vec![1, 1], vec![1, 1]]);
+        assert_eq!(matrix + matrix_2, Some(Matrix(vec![vec![2, 3], vec![4, 5]])));
     }
 
     #[test]
-    fn test_matrix_subtraction() {
-        let matrix1 = MatrixOps(Matrix(vec![vec![1, 3], vec![2, 5]]));
-        let matrix2 = MatrixOps(Matrix(vec![vec![3, 1], vec![1, 1]]));
-        let expected = MatrixOps(Matrix(vec![vec![-2, 2], vec![1, 4]]));
-
-        assert_eq!(matrix1 - matrix2, Some(expected));
-    }
-
-    #[test]
-    fn test_matrix_addition_different_dimensions() {
-        let matrix1 = MatrixOps(Matrix(vec![vec![1, 1], vec![1, 1]]));
-        let matrix2 = MatrixOps(Matrix(vec![vec![1, 1, 3], vec![1, 1]]));
-
-        assert_eq!(matrix1 + matrix2, None);
-    }
-
-    #[test]
-    fn test_matrix_subtraction_different_dimensions() {
-        let matrix1 = MatrixOps(Matrix(vec![vec![1, 3], vec![9, 1]]));
-        let matrix2 = MatrixOps(Matrix(vec![vec![1, 1, 3], vec![1, 1]]));
-
-        assert_eq!(matrix1 - matrix2, None);
+    fn test_sub() {
+        let matrix = Matrix(vec![vec![1, 2], vec![3, 4]]);
+        let matrix_2 = Matrix(vec![vec![1, 1], vec![1, 1]]);
+        assert_eq!(matrix - matrix_2, Some(Matrix(vec![vec![0, 1], vec![2, 3]])));
     }
 }

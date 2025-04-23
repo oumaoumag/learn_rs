@@ -1,12 +1,10 @@
 use std::ops::{Add, Sub};
-use matrix::Matrix;
-use lalgebra_scalar::Scalar;
+pub use matrix::Matrix;
+pub use lalgebra_scalar::Scalar;
 
-// Create a wrapper type for Matrix
 #[derive(Debug, Clone, PartialEq)]
 pub struct MatrixOps<T>(pub Matrix<T>);
 
-// Implement conversion from Matrix to MatrixOps
 impl<T> From<Matrix<T>> for MatrixOps<T> {
     fn from(matrix: Matrix<T>) -> Self {
         MatrixOps(matrix)
@@ -25,7 +23,6 @@ impl<T: Scalar<Item = T> + Clone> Add for MatrixOps<T> {
     type Output = Option<Self>;
 
     fn add(self, other: Self) -> Self::Output {
-        // Check if matrices have the same dimensions
         if self.0.0.len() != other.0.0.len() {
             return None;
         }

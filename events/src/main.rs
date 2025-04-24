@@ -1,11 +1,11 @@
-use events::Event::*;
+use events::Event::*;  
 use chrono::Duration;
 
 fn main() {
     let remainder = Remainder("Go to the doctor");
     println!("{}", remainder.notify());
 
-    let registration = Registration(Duration::seconds(49894));
+    let registration = Registration(Duration::seconds(49094));
     println!("{}", registration.notify());
 
     let appointment = Appointment("Go to the doctor");

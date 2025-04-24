@@ -1,6 +1,6 @@
 use std::ops::Mul;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
 impl<T> Matrix<T> {

@@ -1,55 +1,62 @@
-use std::ops::{Add, Sub};
+use std::ops::Mul;
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct Matrix(pub Vec<Vec<i32>>);
+#[derive(Debug, Clone)]
+pub struct Matrix<T>(pub Vec<Vec<T>>);
 
-impl Add for Matrix {
-    type Output = Option<Matrix>;
+impl<T> Matrix<T> {
+    pub fn number_of_rows(&self) -> usize {
+        self.0.len()
+    }
 
-    fn add(self, rhs: Matrix) -> Self::Output {
-        if self.0.len() != rhs.0.len() || self.0.iter().zip(&rhs.0).any(|(a, b)| a.len() != b.len()) {
-            return None;
+    pub fn number_of_cols(&self) -> usize {
+        if self.0.is_empty() {
+            0
+        } else {
+            self.0[0].len()
         }
+    }
 
-        let result = self.0.into_iter().zip(rhs.0.into_iter()).map(|(row_a, row_b)| {
-            row_a.into_iter().zip(row_b.into_iter()).map(|(a, b)| a + b).collect()
-        }).collect();
+    pub fn row(&self, n: usize) -> Vec<T>
+    where
+        T: Clone,
+    {
+        self.0[n].clone()
+    }
 
-        Some(Matrix(result))
+    pub fn col(&self, n: usize) -> Vec<T>
+    where
+        T: Clone,
+    {
+        self.0.iter().map(|row| row[n].clone()).collect()
     }
 }
 
-impl Sub for Matrix {
-    type Output = Option<Matrix>;
+impl<T> Mul for Matrix<T>
+where
+    T: Clone + std::ops::Add<Output = T> + std::ops::Mul<Output = T> + Default,
+{
+    type Output = Option<Matrix<T>>;
 
-    fn sub(self, rhs: Matrix) -> Self::Output {
-        if self.0.len() != rhs.0.len() || self.0.iter().zip(&rhs.0).any(|(a, b)| a.len() != b.len()) {
+    fn mul(self, rhs: Matrix<T>) -> Option<Matrix<T>> {
+        let m = self.number_of_rows();
+        let n = self.number_of_cols();
+        let p = rhs.number_of_rows();
+        let q = rhs.number_of_cols();
+
+        if n != p {
             return None;
         }
 
-        let result = self.0.into_iter().zip(rhs.0.into_iter()).map(|(row_a, row_b)| {
-            row_a.into_iter().zip(row_b.into_iter()).map(|(a, b)| a - b).collect()
-        }).collect();
-
+        let mut result = vec![vec![T::default(); q]; m];
+        for i in 0..m {
+            for j in 0..q {
+                let mut sum = T::default();
+                for k in 0..n {
+                    sum = sum + self.0[i][k].clone() * rhs.0[k][j].clone();
+                }
+                result[i][j] = sum;
+            }
+        }
         Some(Matrix(result))
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_add() {
-        let matrix = Matrix(vec![vec![1, 2], vec![3, 4]]);
-        let matrix_2 = Matrix(vec![vec![1, 1], vec![1, 1]]);
-        assert_eq!(matrix + matrix_2, Some(Matrix(vec![vec![2, 3], vec![4, 5]])));
-    }
-
-    #[test]
-    fn test_sub() {
-        let matrix = Matrix(vec![vec![1, 2], vec![3, 4]]);
-        let matrix_2 = Matrix(vec![vec![1, 1], vec![1, 1]]);
-        assert_eq!(matrix - matrix_2, Some(Matrix(vec![vec![0, 1], vec![2, 3]])));
     }
 }

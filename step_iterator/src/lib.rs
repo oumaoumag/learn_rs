@@ -1,13 +1,35 @@
-use std::collections::HashMap;
-use std::hash::Hash;
+use std::ops::Add;
 
-pub fn slices_to_map<'a, T: Eq + Hash, U>(keys: &'a [T], values: &'a [U]) -> HashMap<&'a T, &'a U> {
-    let mut map = HashMap::new();
-    let len = keys.len().min(values.len());
-    for i in 0..len {
-        map.insert(&keys[i], &values[i]);
+pub struct StepIterator<T> {
+    current: T,
+    end: T,
+    step: T,
+}
+
+impl<T> StepIterator<T> {
+    pub fn new(beg: T, end: T, step: T) -> Self {
+        StepIterator {
+            current: beg,
+            end,
+            step,
+        }
     }
-    map
+}
+
+impl<T> Iterator for StepIterator<T>
+where
+    T: PartialOrd + Copy + Add<Output = T>,
+{
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current > self.end {
+            return None;
+        }
+        let result = self.current;
+        self.current = self.current + self.step;
+        Some(result)
+    }
 }
 
 #[cfg(test)]
@@ -15,14 +37,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_slices_to_map() {
-        let keys = ["Olivia", "Liam", "Emma", "Noah", "James"];
-        let values = [1, 3, 23, 5, 2];
-        let map = slices_to_map(&keys, &values);
-        assert_eq!(map.get(&"Olivia"), Some(&1));
-        assert_eq!(map.get(&"Liam"), Some(&3));
-        assert_eq!(map.get(&"Emma"), Some(&23));
-        assert_eq!(map.get(&"Noah"), Some(&5));
-        assert_eq!(map.get(&"James"), Some(&2));
+    fn test_step_iterator() {
+        let mut iter = StepIterator::new(0, 10, 2);
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next(), Some(6));
+        assert_eq!(iter.next(), Some(8));
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next(), None);
     }
 }

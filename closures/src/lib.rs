@@ -1,8 +1,9 @@
 pub fn first_fifty_even_square() -> Vec<i32> {
-    (0..=0)
-        .step_by(2)
-        // .take(50)
-        .map(|n| n * n)
+    let square = |x: i32| x * x;
+
+    (1..).filter(|x| x % 2 == 0)
+        .take(50)
+        .map(square)
         .collect()
 }
 

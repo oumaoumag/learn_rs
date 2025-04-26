@@ -1,7 +1,5 @@
 fn first_fifty_even_square() -> Vec<i32> {
-    // Start with 0 as the first even number
-    (0..)
-        .filter(|&n| n % 2 == 0)
+    (0..).step_by(2)
         .take(50)
         .map(|n| n * n)
         .collect()

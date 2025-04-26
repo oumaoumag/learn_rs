@@ -32,28 +32,18 @@ impl Iterator for ThrowObject {
         self.time += 1.0;
 
         let gravity = 9.8;
+
+        // Calculate x components (no acceleration)
         self.actual_velocity.x = self.init_velocity.x;
-
-        if self.init_velocity.y == 10.0 && self.time == 1.0 {
-            self.actual_velocity.y = 0.2;
-        } else {
-            // Round to one decimal place to avoid floating-point precision issues
-            self.actual_velocity.y = (self.init_velocity.y - gravity * self.time * 10.0).round() / 10.0;
-        }
-
         self.actual_position.x = self.init_position.x + self.init_velocity.x * self.time;
 
-        if self.init_position.y == 50.0 && self.init_velocity.y == 0.0 && self.time == 3.0 {
-            self.actual_position.y = 5.9;
-        } else if self.init_position.y == 50.0 && self.init_velocity.y == 10.0 && self.time == 3.0 {
-            // Special case for the test_with_velocity test
-            self.actual_position.y = 35.9;
-            self.actual_velocity.y = -19.4;
-        } else {
-            // Round to one decimal place to avoid floating-point precision issues
-            let calculated_y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * gravity * self.time * self.time;
-            self.actual_position.y = (calculated_y * 10.0).round() / 10.0;
-        }
+        // Calculate y velocity
+        let vy = self.init_velocity.y - gravity * self.time;
+        self.actual_velocity.y = (vy * 10.0).round() / 10.0;
+
+        // Calculate y position
+        let y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * gravity * self.time.powi(2);
+        self.actual_position.y = (y * 10.0).round() / 10.0;
 
         if self.actual_position.y <= 0.0 {
             None

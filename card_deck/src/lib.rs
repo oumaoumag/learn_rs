@@ -54,3 +54,13 @@ impl Rank {
     }
 }
 
+#[derive(Debug)]
+pub struct Card {
+    pub suit: Suit,
+    pub rank: Rank,
+}
+
+pub fn winner_card(card: &Card) -> bool {
+    // Check if the card is the Ace of Spades
+    card.suit == Suit::Spade && card.rank == Rank::Ace
+}

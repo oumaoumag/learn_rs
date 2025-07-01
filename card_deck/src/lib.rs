@@ -26,3 +26,31 @@ impl Suit {
     }
 }
 
+#[derive(Debug, PartialEq)]
+pub enum Rank {
+    Ace,
+    Number(u8), // For cards 2-10
+    Jack,
+    Queen,
+    King,
+}
+
+impl Rank {
+    pub fn random() -> Rank {
+        // Generate a random number between 1 and 13
+        let random_value = rand::thread_rng().gen_range(1..=13);
+        Rank::translate(random_value)
+    }
+
+    pub fn translate(value: u8) -> Rank {
+        match value {
+            1 => Rank::Ace,
+            2..=10 => Rank::Number(value),
+            11 => Rank::Jack,
+            12 => Rank::Queen,
+            13 => Rank::King,
+            _ => Rank::Ace, // Default case for invalid values
+        }
+    }
+}
+

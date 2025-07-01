@@ -17,12 +17,27 @@ pub fn capitalize_first(input: &str) -> String {
 }
 
 pub fn title_case(input: &str) -> String {
-    // Split the input by whitespace and capitalize each word
-    input
-        .split_whitespace()
-        .map(capitalize_first)
-        .collect::<Vec<String>>()
-        .join(" ")
+    // If the input is empty, return an empty string
+    if input.is_empty() {
+        return String::new();
+    }
+
+    let mut result = String::new();
+    let mut capitalize_next = true;
+    
+    for c in input.chars() {
+        if c.is_whitespace() {
+            result.push(c);
+            capitalize_next = true;
+        } else if capitalize_next {
+            result.push_str(&c.to_uppercase().collect::<String>());
+            capitalize_next = false;
+        } else {
+            result.push(c);
+        }
+    }
+    
+    result
 }
 
 pub fn change_case(input: &str) -> String {
